@@ -1,0 +1,62 @@
+import base64
+import requests
+from typing import Any, Dict, Optional
+from src.infrastructure.adapters.vqa.vlm.config import vlm_settings
+from src.infrastructure.adapters.vqa.vlm.initialization_helpers import get_generation_params
+
+
+def build_payload(
+    image_bytes: bytes,
+    system_prompt: str,
+    overrides: Optional[Dict[str, Any]] = None
+) -> Dict[str, Any]:
+    img_b64 = base64.b64encode(image_bytes).decode("ascii")
+    data_uri = f"data:image/png;base64,{img_b64}"
+
+    messages = [
+        {
+            "role": "system",
+            "content": system_prompt,
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "image_url",
+                    "image_url": {"url": data_uri}
+                }
+            ],
+        }
+    ]
+
+    generation_params = get_generation_params(overrides)
+
+    return {
+        "messages": messages,
+        **generation_params
+    }
+
+
+def call_model_api(api_url: str, payload: Dict[str, Any]) -> str:
+    try:
+        response = requests.post(
+            api_url,
+            headers=vlm_settings.headers,
+            json=payload
+        )
+        response.raise_for_status()
+    except requests.RequestException as e:
+        raise RuntimeError(f"API request failed: {str(e)}")
+
+    data = response.json()
+    return data["choices"][0]["message"]["content"]
+
+
+def parse_model_response(response_text: str) -> str:
+    if vlm_settings.strip_json_markers: # If needed
+        if response_text.startswith("```json"):
+            response_text = response_text[len("```json\n"):]
+        if response_text.endswith("```"):
+            response_text = response_text[:-3].strip()
+
+    return response_text
