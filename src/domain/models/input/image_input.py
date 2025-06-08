@@ -1,6 +1,6 @@
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 import pydantic
 
 class ImageInput(pydantic.BaseModel):
-    bytes: bytes
+    bytes: List[int]
     metadata: Optional[Dict[str, object]] = None

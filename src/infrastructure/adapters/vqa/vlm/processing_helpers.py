@@ -10,7 +10,7 @@ def build_payload(
     system_prompt: str,
     overrides: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
-    img_b64 = base64.b64encode(image_bytes).decode("ascii")
+    img_b64 = base64.b64encode(bytes(image_bytes)).decode("ascii")
     data_uri = f"data:image/png;base64,{img_b64}"
 
     messages = [
