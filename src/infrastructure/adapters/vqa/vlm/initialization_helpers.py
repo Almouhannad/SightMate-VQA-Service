@@ -30,7 +30,7 @@ def get_generation_params(
         raise RuntimeError(f"Missing generation settings in vlm_settings: {missing}")
 
     gen_params: Dict[str, Any] = {
-        GenerationParams.MODEL.value: vlm_settings.model_name,
+        GenerationParams.MODEL.value: vlm_settings.model,
         GenerationParams.TEMPERATURE.value: vlm_settings.temperature,
         GenerationParams.TOP_K.value: vlm_settings.top_k,
         GenerationParams.TOP_P.value: vlm_settings.top_p,
