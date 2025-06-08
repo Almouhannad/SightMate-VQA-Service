@@ -9,7 +9,7 @@ class VlmSettings(BaseModel):
     chat_endpoint: str
 
     # Model Configuration
-    model_name: str
+    model: str
     captioning_prompt_path: str
     question_prompt_path: str
 

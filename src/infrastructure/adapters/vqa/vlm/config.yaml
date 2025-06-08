@@ -4,7 +4,7 @@ lms_api_base_url: "http://some_free_VLM_api:1234/v1"
 chat_endpoint: "/chat/completions"
 
 # Model Configuration
-model_name: "google/gemma-3-4b"
+model: "google/gemma-3-4b"
 captioning_prompt_path: "models/vlm/captioning_prompt.txt"
 question_prompt_path: "models/vlm/question_prompt.txt"
 

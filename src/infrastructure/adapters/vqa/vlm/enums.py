@@ -4,7 +4,7 @@ class PromptNames(Enum):
     QUESTION = 'question'    
 
 class GenerationParams(Enum):
-    MODEL = "model_name"
+    MODEL = "model"
     TEMPERATURE = "temperature"
     TOP_K = "top_k"
     TOP_P = "top_p"
