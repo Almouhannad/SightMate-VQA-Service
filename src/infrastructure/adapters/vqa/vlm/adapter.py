@@ -35,4 +35,18 @@ class VlmVqaAdapter(VqaPort):
         return Response(output=parsed_output)
     
     def process_question(self, question_input: QuestionInput) -> Response:
-        return Response(output='')
+        image_bytes = question_input.image.bytes
+        question = question_input.question
+        overrides = question_input.options
+
+        payload = build_payload(
+            image_bytes=image_bytes,
+            system_prompt=self._prompts_texts[PromptNames.QUESTION],
+            overrides=overrides,
+            text=question
+        )
+
+        raw_response = call_model_api(self.api_url, payload)
+        parsed_output = parse_model_response(raw_response)
+
+        return Response(output=parsed_output)

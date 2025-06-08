@@ -1,41 +1,42 @@
 import base64
 import requests
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from src.infrastructure.adapters.vqa.vlm.config import vlm_settings
 from src.infrastructure.adapters.vqa.vlm.initialization_helpers import get_generation_params
 
 
 def build_payload(
-    image_bytes: bytes,
+    image_bytes: List[int],
     system_prompt: str,
-    overrides: Optional[Dict[str, Any]] = None
+    overrides: Optional[Dict[str, Any]] = None,
+    text: Optional[str] = None
 ) -> Dict[str, Any]:
+    # encode image
     img_b64 = base64.b64encode(bytes(image_bytes)).decode("ascii")
     data_uri = f"data:image/png;base64,{img_b64}"
 
+    # build content array
+    content_items: List[Dict[str, Any]] = []
+    if text is not None:
+        content_items.append({"type": "text", "text": text})
+    content_items.append({
+        "type": "image_url",
+        "image_url": {"url": data_uri}
+    })
+
+    # assemble messages
     messages = [
-        {
-            "role": "system",
-            "content": system_prompt,
-        },
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "image_url",
-                    "image_url": {"url": data_uri}
-                }
-            ],
-        }
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": content_items},
     ]
 
+    # merge generation params
     generation_params = get_generation_params(overrides)
 
     return {
         "messages": messages,
         **generation_params
     }
-
 
 def call_model_api(api_url: str, payload: Dict[str, Any]) -> str:
     try:
