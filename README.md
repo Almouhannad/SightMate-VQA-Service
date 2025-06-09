@@ -53,19 +53,73 @@ This makes it easy to:
 
 The service exposes the following REST endpoints:
 
-- **GET `/health`**
-  - Health check endpoint
-  - Returns service status
+### Health Check
 
-- **POST `/vqa/captioning`**
-  - Generates captions for uploaded images
-  - Accepts image input
-  - Returns generated caption
+**GET `/health`**
+- Description: Health check endpoint to verify service status
+- Response:
+  ```json
+  {
+    "status": "ok"
+  }
+  ```
 
-- **POST `/vqa/question`**
-  - Answers questions about uploaded images
-  - Accepts image and question input
-  - Returns answer text
+### Image Captioning
+
+**POST `/vqa/captioning`**
+- Description: Generates captions for uploaded images
+- Request Body:
+  ```json
+  {
+    "image": {
+      "bytes": [/* array of image bytes */],
+      "metadata": {
+        // Optional metadata about the image
+      }
+    },
+    "options": {
+      // Optional configuration for the captioning process
+    }
+  }
+  ```
+- Response:
+  ```json
+  {
+    "output": "Generated caption text",
+    "details": {
+      // Optional additional details about the captioning process
+    }
+  }
+  ```
+
+### Question Answering
+
+**POST `/vqa/question`**
+- Description: Answers questions about uploaded images
+- Request Body:
+  ```json
+  {
+    "image": {
+      "bytes": [/* array of image bytes */],
+      "metadata": {
+        // Optional metadata about the image
+      }
+    },
+    "question": "What color is the car?",
+    "options": {
+      // Optional configuration for the question answering process
+    }
+  }
+  ```
+- Response:
+  ```json
+  {
+    "output": "Answer to the question",
+    "details": {
+      // Optional additional details about the question answering process
+    }
+  }
+  ```
 
 ## 🛠️ Setup & Configuration
 
