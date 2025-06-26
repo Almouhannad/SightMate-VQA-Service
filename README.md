@@ -51,12 +51,23 @@ This makes it easy to:
 
 ## 🚀 API Endpoints
 
-The service exposes the following REST endpoints:
+### Authentication
+
+Some endpoints require an API key for access. You must provide your API key in the `X-API-Key` header for protected endpoints. If the API key is missing or invalid, the service will return a 401 Unauthorized error.
+
+**Example header:**
+
+```
+X-API-Key: your_api_key_here
+```
+
+---
 
 ### Health Check
 
 **GET `/health`**
 - Description: Health check endpoint to verify service status
+- Authentication: ❌ No API key required
 - Response:
   ```json
   {
@@ -68,6 +79,9 @@ The service exposes the following REST endpoints:
 
 **POST `/vqa/captioning`**
 - Description: Generates captions for uploaded images
+- Authentication: ✅ Requires API key (`X-API-Key` header)
+- Request Headers:
+  - `X-API-Key: your_api_key_here`
 - Request Body:
   ```json
   {
@@ -96,6 +110,9 @@ The service exposes the following REST endpoints:
 
 **POST `/vqa/question`**
 - Description: Answers questions about uploaded images
+- Authentication: ✅ Requires API key (`X-API-Key` header)
+- Request Headers:
+  - `X-API-Key: your_api_key_here`
 - Request Body:
   ```json
   {
@@ -194,6 +211,21 @@ class NewModelAdapter(VqaPort):
 ```env
 VQA_ADAPTER=new_model
 ```
+
+## 🔑 API Key Management & Repository Pattern
+
+The service uses a flexible, pluggable repository pattern for API key management, following the same clean architecture principles as the rest of the project. This allows you to easily swap out the backend for API key storage (e.g., MongoDB, in-memory, etc.).
+
+**How it works:**
+
+- The repository interface (`ApiKeyRepository`) defines async methods for getting, creating, and updating API keys.
+  - Api keys must be stored in DB/other backend using their hash values **(not plain-text)**, with usage of `key_prefix` for fast, indexed search
+- The MongoDB implementation (`MongoDbApiKeyRepository`) is registered using a decorator and selected via configuration.
+- The API key is validated for each request to `/ocr/predict` using a FastAPI dependency (see [`src/api/dependencies/authentication.py`](src/api/dependencies/authentication.py)).
+- You can add new repository backends by implementing the interface, they'll be automatically registered, make sure to specify your backend name in `.env` (`API_KEY_REPOSITORY` field).
+
+
+
 ## 📸 More Screenshots
 <div align="center">
   <img src="screenshots/1.png" width="600" alt="VQA Demo 2">
