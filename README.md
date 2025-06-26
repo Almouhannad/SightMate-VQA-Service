@@ -123,29 +123,52 @@ The service exposes the following REST endpoints:
 
 ## 🛠️ Setup & Configuration
 
-1. Clone the repository:
+### 1. Clone the repository
 ```bash
 git clone https://github.com/Almouhannad/SightMate-VQA-Service.git
 cd SightMate-VQA-Service
 ```
 
-2. Create a virtual environment and install dependencies:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
+### 2. Create a `.env` file
 
-3. Create a `.env` file with the following variables:
+Create a `.env` file in the project root with the following variables (see [src/core/config.py](src/core/config.py) for details):
+
 ```env
-VQA_ADAPTER=vlm  # The VQA adapter to use
-LMS_API=http://your_vlm_api_endpoint  # VLM API endpoint
+# VQA model to use:
+VQA_ADAPTER=vlm
+# API Key repository to use (e.g. mongo_db, in-memory, ...)
+API_KEY_REPOSITORY=mongo_db
+LMS_API_BASE_URI_FOR_CONTAINER=your_gemma_api_base_uri  # Only needed if vlm
+
+# MongoDB configuration
+MONGO_HOST=mongo
+MONGO_PORT=27017
+MONGO_ROOT_USERNAME=your_mongo_root_username
+MONGO_ROOT_PASSWORD=your_mongo_root_password
+MONGO_DATABASE=your_database_name
+# Application database and user
+MONGO_DATABASE=vqa_service_database
+MONGO_APP_USERNAME=vqa_service
+MONGO_APP_PASSWORD=admin
+MONGODB_URI=mongodb://${MONGO_APP_USERNAME}:${MONGO_APP_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE}
+
+# Mongo Express credentials
+ME_USERNAME=admin
+ME_PASSWORD=admin
 ```
 
-4. Run the service:
+### 3. Build and run with Docker Compose
+
+Make sure you have [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
+
+Build and start all services (API, MongoDB, Mongo Express):
+
 ```bash
-uvicorn src.api.main:app --reload
+docker-compose up --build
 ```
+
+- The API will be available at [http://localhost:9902](http://localhost:9902)
+- Mongo Express UI will be available at [http://localhost:9802](http://localhost:9802)
 
 ## 🔌 Adding New VQA Models
 
