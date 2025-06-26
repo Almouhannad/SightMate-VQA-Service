@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI
-from src.api.dependencies import get_vqa_port
+from src.api.dependencies.authentication import authenticate_api_key
+from src.api.dependencies.vqa_adapter import get_vqa_port
 from src.domain.models.input.captioning_input import CaptioningInput
 from src.domain.models.input.question_input import QuestionInput
 from src.domain.models.output.response import Response
@@ -21,6 +22,7 @@ async def health_check() -> HealthResponse:
 def predict(
     captioning_input: CaptioningInput,
     vqa_port: VqaPort = Depends(get_vqa_port),
+    _ = Depends(authenticate_api_key),
 ) -> Response:
     response = vqa_port.process_captioning(captioning_input)
     return response
@@ -34,6 +36,7 @@ def predict(
 def answer(
     question_input: QuestionInput,
     vqa_port: VqaPort = Depends(get_vqa_port),
+    _ = Depends(authenticate_api_key),
 ) -> Response:
     response = vqa_port.process_question(question_input)
     return response

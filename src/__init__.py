@@ -2,6 +2,10 @@ import importlib
 import pkgutil
 from pathlib import Path
 
+from src.infrastructure.authentication.utils.hash_provider import HashProvider
+# Warm up
+_ = HashProvider()
+
 # Get the models directory path
 models_dir = Path(__file__).parent / 'infrastructure' / 'adapters' / 'vqa'
 
