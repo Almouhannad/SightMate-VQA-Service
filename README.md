@@ -221,7 +221,7 @@ The service uses a flexible, pluggable repository pattern for API key management
 - The repository interface (`ApiKeyRepository`) defines async methods for getting, creating, and updating API keys.
   - Api keys must be stored in DB/other backend using their hash values **(not plain-text)**, with usage of `key_prefix` for fast, indexed search
 - The MongoDB implementation (`MongoDbApiKeyRepository`) is registered using a decorator and selected via configuration.
-- The API key is validated for each request to `/ocr/predict` using a FastAPI dependency (see [`src/api/dependencies/authentication.py`](src/api/dependencies/authentication.py)).
+- The API key is validated for each request using a FastAPI dependency (see [`src/api/dependencies/authentication.py`](src/api/dependencies/authentication.py)).
 - You can add new repository backends by implementing the interface, they'll be automatically registered, make sure to specify your backend name in `.env` (`API_KEY_REPOSITORY` field).
 
 
