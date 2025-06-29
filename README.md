@@ -78,7 +78,7 @@ X-API-Key: your_api_key_here
 ### Image Captioning
 
 **POST `/vqa/captioning`**
-- Description: Generates captions for uploaded images
+- Description: Generate an image caption, optionally taking a history of previous Q&A.
 - Authentication: ✅ Requires API key (`X-API-Key` header)
 - Request Headers:
   - `X-API-Key: your_api_key_here`
@@ -86,16 +86,23 @@ X-API-Key: your_api_key_here
   ```json
   {
     "image": {
-      "bytes": [/* array of image bytes */],
-      "metadata": {
-        // Optional metadata about the image
-      }
+      "bytes": [ /* image bytes as list<int> */ ],
+      "metadata": { /* optional metadata */ }
     },
-    "options": {
-      // Optional configuration for the captioning process
-    }
+    "history": [
+      {
+        "question": "What is in the glass?",
+        "answer": "MATE 🧉"
+      },
+      {
+        "question": "What is the color of the laptop?",
+        "answer": "Black."
+      }
+    ]
   }
-  ```
+
+* `history` (optional): array of prior Q\&A pairs.
+
 - Response:
   ```json
   {
@@ -109,7 +116,7 @@ X-API-Key: your_api_key_here
 ### Question Answering
 
 **POST `/vqa/question`**
-- Description: Answers questions about uploaded images
+- Description: Ask a question about the image, with optional history of earlier interactions.
 - Authentication: ✅ Requires API key (`X-API-Key` header)
 - Request Headers:
   - `X-API-Key: your_api_key_here`
@@ -117,21 +124,29 @@ X-API-Key: your_api_key_here
   ```json
   {
     "image": {
-      "bytes": [/* array of image bytes */],
-      "metadata": {
-        // Optional metadata about the image
-      }
+      "bytes": [ /* image bytes as list<int> */ ],
+      "metadata": { /* optional metadata */ }
     },
-    "question": "What color is the car?",
-    "options": {
-      // Optional configuration for the question answering process
-    }
+    "question": "What color are the bananas?",
+    "history": [
+      {
+        "question": "What is in the glass?",
+        "answer": "MATE 🧉"
+      },
+      {
+        "question": "What is the color of the laptop?",
+        "answer": "Black."
+      }
+    ]
   }
-  ```
+
+* `question`: the current question to ask.
+* `history` (optional): array of prior Q\&A pairs.
+
 - Response:
   ```json
   {
-    "output": "Answer to the question",
+    "output": "Blue",
     "details": {
       // Optional additional details about the question answering process
     }
