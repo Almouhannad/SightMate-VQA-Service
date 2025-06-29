@@ -26,12 +26,13 @@ class VlmVqaAdapter(VqaPort):
         payload = build_payload(
             image_bytes=image_bytes,
             system_prompt=self._prompts_texts[PromptNames.CAPTIONING],
-            overrides=overrides
+            overrides=overrides,
+            history=captioning_input.history
         )
 
         raw_response = call_model_api(self.api_url, payload)
         parsed_output = parse_model_response(raw_response)
-
+        
         return Response(output=parsed_output)
     
     def process_question(self, question_input: QuestionInput) -> Response:
@@ -43,10 +44,11 @@ class VlmVqaAdapter(VqaPort):
             image_bytes=image_bytes,
             system_prompt=self._prompts_texts[PromptNames.QUESTION],
             overrides=overrides,
-            text=question
+            text=question,
+            history=question_input.history
         )
 
         raw_response = call_model_api(self.api_url, payload)
         parsed_output = parse_model_response(raw_response)
-
+        # print(payload)
         return Response(output=parsed_output)

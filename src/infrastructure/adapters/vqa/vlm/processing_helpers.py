@@ -9,30 +9,53 @@ def build_payload(
     image_bytes: List[int],
     system_prompt: str,
     overrides: Optional[Dict[str, Any]] = None,
-    text: Optional[str] = None
+    text: Optional[str] = None,
+    history: Optional[List[Any]] = None,  # List[HistoryItemInput]
 ) -> Dict[str, Any]:
-    # encode image
+    # Encode the image as a data URI
     img_b64 = base64.b64encode(bytes(image_bytes)).decode("ascii")
     data_uri = f"data:image/png;base64,{img_b64}"
 
-    # build content array
-    content_items: List[Dict[str, Any]] = []
+    #building the 'messages' list
+    messages: List[Dict[str, Any]] = [
+        {"role": "system", "content": system_prompt}
+    ]
+
+    # history (user + assistant) messages
+    if history:
+        for item in history:
+            # previous user question
+            messages.append({
+                "role": "user",
+                "content": item.question
+            })
+            # previous assistant answer
+            messages.append({
+                "role": "assistant",
+                "content": item.answer
+            })
+
+    # final user input with text and image
+    final_content: List[Dict[str, Any]] = []
     if text is not None:
-        content_items.append({"type": "text", "text": text})
-    content_items.append({
+        final_content.append({
+            "type": "text",
+            "text": text
+        })
+    final_content.append({
         "type": "image_url",
         "image_url": {"url": data_uri}
     })
 
-    # assemble messages
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": content_items},
-    ]
+    messages.append({
+        "role": "user",
+        "content": final_content
+    })
 
-    # merge generation params
-    generation_params = get_generation_params(overrides)
+    # Merge with any extra generation params
+    generation_params = get_generation_params(overrides or {})
 
+    # full payload
     return {
         "messages": messages,
         **generation_params
