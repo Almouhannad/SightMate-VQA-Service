@@ -167,7 +167,7 @@ Create a `.env` file in the project root with the following variables (see [src/
 
 ```env
 # VQA model to use:
-VQA_ADAPTER=vlm
+VQA_ADAPTER=smsa # Or vlm (must register api)
 # API Key repository to use (e.g. mongo_db, in-memory, ...)
 API_KEY_REPOSITORY=mongo_db
 LMS_API_BASE_URI_FOR_CONTAINER=your_gemma_api_base_uri  # Only needed if vlm
