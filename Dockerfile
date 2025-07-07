@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.unsloth.txt
 EXPOSE 8000
 
 # Start the app
-CMD ["uvicorn", "src.api.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.api.main:app", "--reload", "--reload-exclude", "**/unsloth_compiled_cache/**", "--host", "0.0.0.0", "--port", "8000"]
