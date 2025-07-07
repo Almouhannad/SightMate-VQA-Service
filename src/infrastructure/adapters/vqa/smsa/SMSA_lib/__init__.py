@@ -1,8 +1,8 @@
 from unsloth import FastVisionModel
 import torch
 import torch.nn as nn
-from SMSA.helpers.embeddings import generate_output_embedding
-from SMSA.helpers.samples_generator import generate_vqa_sample, generate_instructions_sample
+from src.infrastructure.adapters.vqa.smsa.SMSA_lib.helpers.embeddings import generate_output_embedding
+from src.infrastructure.adapters.vqa.smsa.SMSA_lib.helpers.samples_generator import generate_vqa_sample, generate_instructions_sample
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
