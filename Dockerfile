@@ -5,6 +5,9 @@ WORKDIR /app
 # Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+# Install dependecies for unsloth environment
+COPY requirements.unsloth.txt .
+RUN pip install --no-cache-dir -r requirements.unsloth.txt
 
 # Expose FastAPI port
 EXPOSE 8000
