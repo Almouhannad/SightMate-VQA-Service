@@ -1,0 +1,4 @@
+model_path: models/smsa/SMSA_final
+selector_path: models/smsa/selector.pt
+TAU: 0.65
+threshold: 0.67
