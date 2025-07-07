@@ -48,3 +48,27 @@ def generate_instructions_sample(image_bytes: list[int], question: str):
         }
     ]
     return {"messages": conversation}
+
+
+def generate_captioning_sample(image_bytes: list[int]):
+    SYSTEM_PROMPT  = \
+    """You are an image captioning assistant for visually impaired users.
+    When given an image reply with a single detailed sentence that captions the image and explains the most important visual elements (objects, actions, context, colors, and spatial relationships).
+    Answer in no more than one short sentence.
+    Use simple words. Output the answer only.
+    If you can't answer, tell that."""
+    image = Image.open(BytesIO(bytes(image_bytes)))
+    image = image.resize((512, 512))  
+    conversation = [
+        {
+            "role": "system",
+            "content": [{"type": "text", "text": SYSTEM_PROMPT}],
+        },
+        {
+            "role": "user",
+            "content": [
+                {"type": "image", "image": image}
+            ]
+        }
+    ]
+    return {"messages": conversation}

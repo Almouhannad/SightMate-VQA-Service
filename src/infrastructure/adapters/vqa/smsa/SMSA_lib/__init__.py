@@ -2,7 +2,7 @@ from unsloth import FastVisionModel
 import torch
 import torch.nn as nn
 from src.infrastructure.adapters.vqa.smsa.SMSA_lib.helpers.embeddings import generate_output_embedding
-from src.infrastructure.adapters.vqa.smsa.SMSA_lib.helpers.samples_generator import generate_vqa_sample, generate_instructions_sample
+from src.infrastructure.adapters.vqa.smsa.SMSA_lib.helpers.samples_generator import generate_vqa_sample, generate_instructions_sample, generate_captioning_sample
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -41,7 +41,7 @@ class SMSA:
         self.__initialized = True
 
     
-    def process_vqa(self, image_bytes: list[int], question: str,  TAU: float = 0.65, threshold: float = 0.67):
+    def process_vqa(self, image_bytes: list[int], question: str, TAU: float = 0.65, threshold: float = 0.67):
         if not self.__initialized:
             self.initialize()
         vqa_sample = generate_vqa_sample(image_bytes=image_bytes, question=question)
@@ -67,6 +67,12 @@ class SMSA:
         
         return answer_text.strip('\'"')
 
-            
+    def process_ic(self, image_bytes: list[int], TAU: float = 0.65, threshold: float = 0.67):
+        if not self.__initialized:
+            self.initialize()
+        ic_sample = generate_captioning_sample(image_bytes=image_bytes)
+        _, _, answer_text = generate_output_embedding(
+            model=self.__model, tokenizer=self.__tokenizer, sample=ic_sample)
+        return answer_text
 
 

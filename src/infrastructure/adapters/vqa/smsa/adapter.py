@@ -14,9 +14,8 @@ class SMSAVqaAdapter(VqaPort):
 
     def process_captioning(self, captioning_input: CaptioningInput) -> Response:
         image_bytes = captioning_input.image.bytes
-        answer = self.__smsa.process_vqa(
+        answer = self.__smsa.process_ic(
             image_bytes= image_bytes,
-            question='Capture this image in no more than two sentences.',
             TAU=smsa_settings.TAU,
             threshold=smsa_settings.threshold)
         

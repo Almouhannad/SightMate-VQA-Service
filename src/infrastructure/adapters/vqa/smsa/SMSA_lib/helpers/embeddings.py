@@ -4,7 +4,8 @@ DEVICE  = "cuda" if torch.cuda.is_available() else "cpu"
 def generate_input_embedding(model, tokenizer, sample):
     
     messages = [sample["messages"][0], sample["messages"][1]]
-    image = sample["messages"][1]["content"][1]['image']
+    image_message_index = len(sample["messages"][1]["content"]) - 1
+    image = sample["messages"][1]["content"][image_message_index]['image']
 
     conversation_template = tokenizer.apply_chat_template(messages, add_generation_prompt=True)
     inputs = tokenizer \
