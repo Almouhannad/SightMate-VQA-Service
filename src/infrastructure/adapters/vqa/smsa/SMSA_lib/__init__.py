@@ -20,7 +20,8 @@ class SMSA:
                 nn.Linear(3584, 512),
                 nn.ReLU(),
                 nn.Dropout(0.25),
-                nn.Linear(512, 1))
+                nn.Linear(512, 1),
+                nn.Sigmoid())
         def forward(self, x): return self.net(x).squeeze(-1)             
 
     def initialize(self):
